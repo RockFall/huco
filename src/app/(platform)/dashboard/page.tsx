@@ -1,5 +1,7 @@
 import TopBar from "@/components/platform/TopBar";
+import PendingTasks from "@/components/platform/PendingTasks";
 import Link from "next/link";
+import { getTasks, requireUser } from "@/lib/dal";
 
 const upcomingMeetings = [
   { id: 1, title: "Daily Standup", time: "09:00", duration: "15 min", attendees: 5 },
@@ -14,13 +16,6 @@ const recentEmails = [
   { id: 4, from: "Financeiro", subject: "Comprovante de pagamento", time: "Ontem", unread: false },
 ];
 
-const pendingTasks = [
-  { id: 1, title: "Finalizar relatório mensal", priority: "alta", dueDate: "Hoje" },
-  { id: 2, title: "Revisar proposta comercial", priority: "média", dueDate: "Amanhã" },
-  { id: 3, title: "Atualizar planilha de custos", priority: "baixa", dueDate: "Sex" },
-  { id: 4, title: "Responder pesquisa de clima", priority: "média", dueDate: "Sex" },
-];
-
 const quickActions = [
   { name: "Novo Email", href: "/email", icon: "✉️", color: "bg-red-50 text-red-600" },
   { name: "Agendar Reunião", href: "/reunioes", icon: "📹", color: "bg-purple-50 text-purple-600" },
@@ -30,12 +25,32 @@ const quickActions = [
   { name: "Iniciar Chat", href: "/chat", icon: "💬", color: "bg-indigo-50 text-indigo-600" },
 ];
 
-export default function DashboardPage() {
+function greeting(date = new Date()) {
+  const hour = Number(
+    new Intl.DateTimeFormat("pt-BR", {
+      hour: "numeric",
+      hourCycle: "h23",
+      timeZone: "America/Sao_Paulo",
+    }).format(date)
+  );
+  if (hour < 12) return "Bom dia";
+  if (hour < 18) return "Boa tarde";
+  return "Boa noite";
+}
+
+export default async function DashboardPage() {
+  const user = await requireUser();
+  const tasks = await getTasks();
+  const openTasks = tasks.filter((task) => task.status !== "done");
+  const dueToday = openTasks.filter((task) => task.dueLabel === "Hoje").length;
+  const dueTodayLabel = dueToday === 0 ? "Nenhuma vence hoje" : dueToday === 1 ? "1 vence hoje" : `${dueToday} vencem hoje`;
+  const firstName = user.name.split(" ")[0] ?? "você";
   const currentDate = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "America/Sao_Paulo",
   });
 
   return (
@@ -45,7 +60,7 @@ export default function DashboardPage() {
       <div className="flex-1 overflow-auto p-6">
         {/* Welcome */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Bom dia, Você</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{greeting()}, {firstName}</h2>
           <p className="text-gray-500 capitalize">{currentDate}</p>
         </div>
 
@@ -139,43 +154,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Pending Tasks */}
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900">Tarefas pendentes</h3>
-              <Link href="/tarefas" className="text-sm text-blue-600 hover:underline">Ver todas</Link>
-            </div>
-            <div className="divide-y divide-gray-100">
-              {pendingTasks.map((task) => (
-                <div key={task.id} className="px-5 py-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-start gap-3">
-                    <input type="checkbox" className="mt-1 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{task.title}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className={`text-xs px-1.5 py-0.5 rounded ${
-                          task.priority === "alta" ? "bg-red-100 text-red-700" :
-                          task.priority === "média" ? "bg-yellow-100 text-yellow-700" :
-                          "bg-gray-100 text-gray-600"
-                        }`}>
-                          {task.priority}
-                        </span>
-                        <span className="text-xs text-gray-400">Prazo: {task.dueDate}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="px-5 py-3 bg-gray-50 border-t border-gray-100">
-              <Link href="/tarefas" className="flex items-center justify-center gap-2 text-sm font-medium text-green-600 hover:text-green-700">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Nova tarefa
-              </Link>
-            </div>
-          </div>
+          <PendingTasks tasks={tasks} />
         </div>
 
         {/* Stats */}
@@ -183,7 +162,7 @@ export default function DashboardPage() {
           {[
             { label: "Emails não lidos", value: "3", change: "+2 hoje", color: "text-red-600" },
             { label: "Reuniões hoje", value: "3", change: "Próxima às 09:00", color: "text-purple-600" },
-            { label: "Tarefas pendentes", value: "4", change: "1 vence hoje", color: "text-yellow-600" },
+            { label: "Tarefas pendentes", value: String(openTasks.length), change: dueTodayLabel, color: "text-yellow-600" },
             { label: "Mensagens não lidas", value: "5", change: "3 de Helena", color: "text-blue-600" },
           ].map((stat, index) => (
             <div key={index} className="bg-white rounded-xl border border-gray-200 p-5">
