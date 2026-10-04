@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} antialiased`}>
+    <html lang="pt-BR" className={`${inter.variable} antialiased`} data-scroll-behavior="smooth">
       <body className="min-h-screen bg-white text-[#0a0a0a]">
         {children}
         <VirtualAssistant />
