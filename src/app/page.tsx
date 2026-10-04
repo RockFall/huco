@@ -1,33 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="flex items-center justify-between h-20">
-            <a href="#" className="flex items-center gap-1">
-              <span className="text-2xl font-black tracking-tight">Hu.Co</span>
-              <span className="text-xs text-gray-500 hidden sm:block ml-2">Human Company</span>
-            </a>
-            
-            <nav className="hidden md:flex items-center gap-8">
-              <a href="#empresa" className="text-sm text-gray-600 hover:text-black transition-colors">A empresa</a>
-              <a href="#trabalho" className="text-sm text-gray-600 hover:text-black transition-colors">O trabalho</a>
-              <a href="#equipe" className="text-sm text-gray-600 hover:text-black transition-colors">Quem trabalha aqui</a>
-              <a href="#vagas" className="text-sm text-gray-600 hover:text-black transition-colors">Vagas</a>
-            </nav>
-            
-            <a 
-              href="#vagas"
-              className="bg-[#1e3a5f] text-white text-sm font-medium px-5 py-2.5 rounded hover:bg-[#152a45] transition-colors"
-            >
-              Quero trabalhar
-            </a>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="flex-1 pt-20">
         {/* Hero Section */}
@@ -420,47 +399,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#0a0a0a] text-white py-16">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div>
-              <span className="text-2xl font-black tracking-tight">Hu.Co</span>
-              <p className="text-gray-400 mt-4 text-sm">Human Company</p>
-            </div>
-            
-            <div>
-              <h4 className="font-bold mb-4">A empresa</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#empresa" className="hover:text-white transition-colors">Sobre nós</a></li>
-                <li><a href="#equipe" className="hover:text-white transition-colors">Quem trabalha aqui</a></li>
-                <li><a href="#trabalho" className="hover:text-white transition-colors">Como funciona</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-bold mb-4">Trabalhe conosco</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#vagas" className="hover:text-white transition-colors">Vagas abertas</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Envie seu currículo</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-bold mb-4">Contato</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>contato@huco.com.br</li>
-                <li>(11) 1234-5678</li>
-                <li>Av. Paulista, 1000<br />São Paulo, SP</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 pt-8 text-center">
-            <p className="text-gray-500 text-sm">Hu.Co — Uma empresa.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
