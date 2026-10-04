@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import VirtualAssistant from "@/components/VirtualAssistant";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -25,7 +26,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={`${inter.variable} antialiased`}>
-      <body className="min-h-screen bg-white text-[#0a0a0a]">{children}</body>
+      <body className="min-h-screen bg-white text-[#0a0a0a]">
+        {children}
+        <VirtualAssistant />
+      </body>
     </html>
   );
 }
