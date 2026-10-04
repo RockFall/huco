@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/dal";
-import LoginForm from "./login-form";
+import CadastroForm from "./cadastro-form";
 
 export const metadata: Metadata = {
-  title: "Entrar — Hu.Co",
-  description: "Entre na Hu.Co para acessar o workspace.",
+  title: "Criar conta — Hu.Co",
+  description: "Crie uma conta na Hu.Co para usar o workspace.",
 };
 
-export default async function LoginPage() {
+export default async function CadastroPage() {
   const user = await getCurrentUser();
   if (user) redirect("/dashboard");
-  return <LoginForm />;
+  return <CadastroForm />;
 }
